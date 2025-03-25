@@ -367,15 +367,26 @@ export default function Agenda() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        {appointment.isPublic ? (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-success-light text-success">
-                            Consulta
+                        <div className="flex flex-col gap-1">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            appointment.isPublic 
+                              ? "bg-success-light text-success" 
+                              : "bg-danger-light text-danger"
+                          }`}>
+                            {appointment.isPublic ? "Consulta" : "Compromisso"}
                           </span>
-                        ) : (
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-danger-light text-danger">
-                            Compromisso
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            appointment.status === 'scheduled' ? 'bg-primary-light text-primary' :
+                            appointment.status === 'completed' ? 'bg-success-light text-success' :
+                            appointment.status === 'cancelled' ? 'bg-danger-light text-danger' :
+                            'bg-warning-light text-warning'
+                          }`}>
+                            {appointment.status === 'scheduled' ? 'Agendado' :
+                             appointment.status === 'completed' ? 'Concluído' :
+                             appointment.status === 'cancelled' ? 'Cancelado' :
+                             'Não Compareceu'}
                           </span>
-                        )}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <Link

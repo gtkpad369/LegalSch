@@ -326,8 +326,33 @@ export class MemStorage implements IStorage {
 
   async createWeeklySchedule(schedule: InsertWeeklySchedule): Promise<WeeklySchedule> {
     const id = this.currentScheduleId++;
-    // Garantir que timeSlots seja um array não nulo
-    const timeSlots = schedule.timeSlots || [];
+    let timeSlots = schedule.timeSlots || [];
+    
+    // Se não houver slots definidos, gerar baseado no template ou agenda anterior
+    if (timeSlots.length === 0) {
+      if (schedule.templateId) {
+        const template = await this.getScheduleTemplate(schedule.templateId);
+        if (template) {
+          timeSlots = template.timeSlots.map(slot => ({
+            ...slot,
+            date: format(addDays(schedule.weekStartDate, slot.day - 1), 'yyyy-MM-dd')
+          }));
+        }
+      } else {
+        // Buscar última agenda
+        const previousSchedules = await this.getWeeklySchedules(schedule.lawyerId);
+        const lastSchedule = previousSchedules
+          .sort((a, b) => b.weekStartDate.getTime() - a.weekStartDate.getTime())[0];
+          
+        if (lastSchedule) {
+          timeSlots = lastSchedule.timeSlots.map(slot => ({
+            ...slot,
+            date: format(addDays(schedule.weekStartDate, new Date(slot.date).getDay() - 1), 'yyyy-MM-dd')
+          }));
+        }
+      }
+    }
+
     const newSchedule: WeeklySchedule = { 
       ...schedule, 
       id,
