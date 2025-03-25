@@ -1,0 +1,82 @@
+Projeto Agendamentos
+
+Sistema de agendamento para consultas jurídicas, onde o advogado disponibiliza os horários vagos para atendimento, o cliente realiza o próprio agendamento com base nesses horários e recebe orientações prévias para o dia da consulta e o advogado é automaticamente notificado do agendamento realizado. O Cliente não possui conta na plataforma, visualiza a agenda pelo link que irá receber do advogado, ou acessar por mídias sociais.
+
+
+Advogado
+
+O Advogado deverá lançar a agenda disponível semanalmente, deverá ter um campo de descrição das próprias atividades e áreas de atuação, Deve ter acesso aos dados do cliente (Nome completo, cpf e data de nascimento), Visualização da agenda.
+Os agendamentos deverão ser notificados via WhatsApp, incluindo o link para visualizar o cadastro do cliente.
+Os clientes agendados deverão ter seus dados consultados no JusBrasil ou TJ para análise do advogado.
+
+
+Perfil
+
+Nome completo
+Número da OAB
+Endereço
+Email
+Telefone de contato
+Redes Sociais
+Links Externos
+
+Descrição das Atividades
+Áreas de atuação
+
+
+Agenda
+
+Deve possuir agendamentos públicos e privados, onde os públicos são os feitos por clientes na plataforma e os privados são os de controle de compromissos do advogado.
+
+Na agenda, deverá mostrar a semana atual, em cada dia os compromissos e ao selecionar o dia, todos os compromissos daquele dia. Ao clicar no agendamento, deve abrir a tela com os dados do agendamento.
+
+Os horários disponíveis para agendamento de clientes, deverá ser configurado semanalmente.
+A agenda da semana deverá ter opção de ser gerada automaticamente com base em um template.
+A agenda da semana deverá ter opção de ser gerada com base nas anteriores.
+
+
+Agendamento
+
+	Público (Cliente)
+		- Data e Hora
+		- Deverá mostrar os dados que o cliente informou
+		- Deverá acessar os documentos que o cliente enviou
+		- Deverá mostrar os processos em andamento via integração
+		- Link para acesso direto ao JusBrasil
+
+
+	Privado (Compromisso)
+		- Nome
+		- Descrição
+		- Data/hora
+
+
+Configurações
+
+	- Deve ter uma lista de documentos necessários para levar no dia de atendimento Presencial, Por tipo de processo.
+
+
+Cliente
+
+* Interage diretamente com a agenda do advogado, sem necessidade de cadastro e login.
+
+Deve ter uma lista de documentos necessários para levar no dia de atendimento Presencial, Por tipo de processo.
+Deve ter acesso a uma breve apresentação do advogado, incluindo as atividades e áreas de atuação.
+Deve visualizar a agenda do advogado com os horários disponíveis em verde e indisponíveis em vermelho.
+Deve ter campo para preencher (Nome completo, Data de nascimento, cpf, endereço, telefone e email).
+Deve ter um campo para descrever o motivo do agendamento.
+Deve ter um campo para anexo de documentos em pdf, até 3MB.
+	-	Identificação (RG, CPF, CNH ou CTPS)
+	- 	Comprovante de Residencia
+	
+	- 	Outros (Documentos Comprobatórios, BO, Documentações civis)
+
+
+
+Requisitos não funcionais
+
+A tela pública do advogado será acessada via slug 
+O Advogado pode manter os dados dos clientes permanentemente com excessão dos anexos enviados.
+Os anexos tem que ser apagados depois de 30 dias.
+A plataforma deve seguir a legislação LGPD
+
