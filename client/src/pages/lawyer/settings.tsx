@@ -7,21 +7,22 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
   FormDescription,
-  FormMessage 
+  FormMessage
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox, Switch } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DAYS_OF_WEEK, COMMON_TIME_SLOTS } from "@/lib/constants";
+import { Label } from "@/components/ui/label";
 
 // Required documents schema
 const documentRequirementSchema = z.object({
@@ -48,13 +49,14 @@ export default function Settings() {
     endTime: string;
     isAvailable: boolean;
   }[]>([]);
-  
+  const [autoGenerateSchedule, setAutoGenerateSchedule] = useState(false);
+
   // Sample lawyer ID (would come from auth context in real app)
   const lawyerId = 1;
-  
+
   // Get lawyer data
   const { lawyer, isLoading } = useLawyer({ id: lawyerId });
-  
+
   // Set up document requirements form
   const documentForm = useForm<z.infer<typeof documentRequirementSchema>>({
     resolver: zodResolver(documentRequirementSchema),
@@ -63,7 +65,7 @@ export default function Settings() {
       requiredDocuments: ["RG ou CPF", "Comprovante de Residência"],
     },
   });
-  
+
   // Set up schedule template form
   const scheduleForm = useForm<z.infer<typeof scheduleTemplateSchema>>({
     resolver: zodResolver(scheduleTemplateSchema),
@@ -72,7 +74,7 @@ export default function Settings() {
       timeSlots: [],
     },
   });
-  
+
   // Handle adding a time slot
   const handleAddTimeSlot = () => {
     const newTimeSlot = {
@@ -81,18 +83,18 @@ export default function Settings() {
       endTime: "10:00",
       isAvailable: true,
     };
-    
+
     setTimeSlots([...timeSlots, newTimeSlot]);
     scheduleForm.setValue("timeSlots", [...timeSlots, newTimeSlot]);
   };
-  
+
   // Handle removing a time slot
   const handleRemoveTimeSlot = (index: number) => {
     const updatedTimeSlots = timeSlots.filter((_, i) => i !== index);
     setTimeSlots(updatedTimeSlots);
     scheduleForm.setValue("timeSlots", updatedTimeSlots);
   };
-  
+
   // Update time slot values
   const updateTimeSlot = (index: number, field: string, value: any) => {
     const updatedTimeSlots = [...timeSlots];
@@ -100,35 +102,35 @@ export default function Settings() {
       ...updatedTimeSlots[index],
       [field]: value,
     };
-    
+
     setTimeSlots(updatedTimeSlots);
     scheduleForm.setValue("timeSlots", updatedTimeSlots);
   };
-  
+
   // Submit document requirements form
   const handleDocumentSubmit = (data: z.infer<typeof documentRequirementSchema>) => {
     console.log("Document Requirements:", data);
     // In a real app, this would submit to the API
   };
-  
+
   // Submit schedule template form
   const handleScheduleSubmit = (data: z.infer<typeof scheduleTemplateSchema>) => {
     console.log("Schedule Template:", data);
     // In a real app, this would submit to the API
   };
-  
+
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-slate-50">
       <SidebarNavigation currentPage="/settings" />
-      
+
       <MobileNavigation />
-      
+
       <main className="flex-1 p-4 md:p-6 md:ml-64 pb-16 md:pb-6">
-        <PageHeader 
-          title="Configurações" 
+        <PageHeader
+          title="Configurações"
           subtitle="Configurações e preferências do sistema"
         />
-        
+
         {isLoading ? (
           <div className="bg-white p-8 rounded-lg shadow-sm border border-slate-200 text-center">
             <p className="text-slate-500">Carregando configurações...</p>
@@ -141,7 +143,7 @@ export default function Settings() {
               <TabsTrigger value="notifications">Notificações</TabsTrigger>
               <TabsTrigger value="security">Segurança</TabsTrigger>
             </TabsList>
-            
+
             {/* Documents Tab */}
             <TabsContent value="documents" className="space-y-6">
               <Card>
@@ -167,7 +169,7 @@ export default function Settings() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={documentForm.control}
                         name="requiredDocuments"
@@ -179,7 +181,7 @@ export default function Settings() {
                                 Selecione os documentos que o cliente deve enviar.
                               </FormDescription>
                             </div>
-                            
+
                             <div className="space-y-2">
                               {["RG ou CPF", "Comprovante de Residência", "Certidão de Nascimento", "Certidão de Casamento", "Carteira de Trabalho", "Documentação de Bens", "Boletim de Ocorrência"].map((doc) => (
                                 <FormField
@@ -214,11 +216,11 @@ export default function Settings() {
                                   }}
                                 />
                               ))}
-                              
+
                               {/* Add custom document input */}
                               <div className="flex items-center space-x-2 mt-2">
-                                <Input 
-                                  placeholder="Adicionar outro documento..." 
+                                <Input
+                                  placeholder="Adicionar outro documento..."
                                   className="flex-1"
                                   onKeyDown={(e) => {
                                     if (e.key === 'Enter') {
@@ -232,8 +234,8 @@ export default function Settings() {
                                     }
                                   }}
                                 />
-                                <Button 
-                                  type="button" 
+                                <Button
+                                  type="button"
                                   variant="outline"
                                   onClick={() => {
                                     const input = document.querySelector('input[placeholder="Adicionar outro documento..."]') as HTMLInputElement;
@@ -253,7 +255,7 @@ export default function Settings() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <div className="flex justify-end">
                         <Button type="submit">Salvar Requisitos</Button>
                       </div>
@@ -261,7 +263,7 @@ export default function Settings() {
                   </Form>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader>
                   <CardTitle>Requisitos Cadastrados</CardTitle>
@@ -280,7 +282,7 @@ export default function Settings() {
                         <li>Documentos relacionados ao processo</li>
                       </ul>
                     </div>
-                    
+
                     <div className="border rounded-lg p-4">
                       <h3 className="font-medium text-lg mb-2">Direito de Família</h3>
                       <ul className="list-disc pl-5 space-y-1">
@@ -290,7 +292,7 @@ export default function Settings() {
                         <li>Documentação de bens</li>
                       </ul>
                     </div>
-                    
+
                     <div className="border rounded-lg p-4">
                       <h3 className="font-medium text-lg mb-2">Direito Trabalhista</h3>
                       <ul className="list-disc pl-5 space-y-1">
@@ -305,7 +307,7 @@ export default function Settings() {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Schedule Tab */}
             <TabsContent value="schedule" className="space-y-6">
               <Card>
@@ -331,15 +333,15 @@ export default function Settings() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <div className="border rounded-lg p-4 space-y-4">
                         <h3 className="font-medium">Adicionar Horários</h3>
-                        
+
                         <div className="flex flex-col md:flex-row gap-4 items-end">
                           <div className="w-full md:w-1/3">
                             <FormLabel>Dia da Semana</FormLabel>
-                            <Select 
-                              value={selectedDay.toString()} 
+                            <Select
+                              value={selectedDay.toString()}
                               onValueChange={(value) => setSelectedDay(parseInt(value))}
                             >
                               <SelectTrigger>
@@ -354,12 +356,12 @@ export default function Settings() {
                               </SelectContent>
                             </Select>
                           </div>
-                          
+
                           <Button type="button" onClick={handleAddTimeSlot}>
                             Adicionar Horário
                           </Button>
                         </div>
-                        
+
                         {timeSlots.length > 0 && (
                           <div className="space-y-2 mt-4">
                             <div className="grid grid-cols-12 gap-2 font-medium text-sm text-slate-500 px-2">
@@ -369,15 +371,15 @@ export default function Settings() {
                               <div className="col-span-2">Disponível</div>
                               <div className="col-span-1"></div>
                             </div>
-                            
+
                             {timeSlots.map((slot, index) => (
                               <div key={index} className="grid grid-cols-12 gap-2 items-center bg-slate-50 p-2 rounded-md">
                                 <div className="col-span-3">
                                   {DAYS_OF_WEEK.find(day => day.value === slot.day)?.label}
                                 </div>
                                 <div className="col-span-3">
-                                  <Select 
-                                    value={slot.startTime} 
+                                  <Select
+                                    value={slot.startTime}
                                     onValueChange={(value) => updateTimeSlot(index, 'startTime', value)}
                                   >
                                     <SelectTrigger>
@@ -393,8 +395,8 @@ export default function Settings() {
                                   </Select>
                                 </div>
                                 <div className="col-span-3">
-                                  <Select 
-                                    value={slot.endTime} 
+                                  <Select
+                                    value={slot.endTime}
                                     onValueChange={(value) => updateTimeSlot(index, 'endTime', value)}
                                   >
                                     <SelectTrigger>
@@ -410,33 +412,33 @@ export default function Settings() {
                                   </Select>
                                 </div>
                                 <div className="col-span-2 flex items-center">
-                                  <Checkbox 
+                                  <Checkbox
                                     checked={slot.isAvailable}
-                                    onCheckedChange={(checked) => 
+                                    onCheckedChange={(checked) =>
                                       updateTimeSlot(index, 'isAvailable', !!checked)
                                     }
                                   />
                                   <span className="ml-2 text-sm">Sim</span>
                                 </div>
                                 <div className="col-span-1 text-right">
-                                  <Button 
-                                    type="button" 
-                                    variant="ghost" 
+                                  <Button
+                                    type="button"
+                                    variant="ghost"
                                     className="h-8 w-8 p-0"
                                     onClick={() => handleRemoveTimeSlot(index)}
                                   >
-                                    <svg 
-                                      xmlns="http://www.w3.org/2000/svg" 
-                                      className="h-5 w-5 text-slate-500 hover:text-danger" 
-                                      fill="none" 
-                                      viewBox="0 0 24 24" 
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      className="h-5 w-5 text-slate-500 hover:text-danger"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
                                       stroke="currentColor"
                                     >
-                                      <path 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round" 
-                                        strokeWidth={2} 
-                                        d="M6 18L18 6M6 6l12 12" 
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
                                       />
                                     </svg>
                                   </Button>
@@ -446,7 +448,7 @@ export default function Settings() {
                           </div>
                         )}
                       </div>
-                      
+
                       <div className="flex justify-end">
                         <Button type="submit">Salvar Modelo</Button>
                       </div>
@@ -454,7 +456,7 @@ export default function Settings() {
                   </Form>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader>
                   <CardTitle>Modelos Salvos</CardTitle>
@@ -504,7 +506,7 @@ export default function Settings() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="border rounded-lg p-4">
                       <div className="flex justify-between mb-2">
                         <h3 className="font-medium text-lg">Horário Reduzido</h3>
@@ -545,7 +547,7 @@ export default function Settings() {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Notifications Tab */}
             <TabsContent value="notifications" className="space-y-6">
               <Card>
@@ -566,7 +568,7 @@ export default function Settings() {
                       </div>
                       <Checkbox defaultChecked />
                     </div>
-                    
+
                     <div className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <label className="font-medium">Notificações por Email</label>
@@ -576,7 +578,7 @@ export default function Settings() {
                       </div>
                       <Checkbox defaultChecked />
                     </div>
-                    
+
                     <div className="flex items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <label className="font-medium">Lembretes de Compromissos</label>
@@ -586,7 +588,7 @@ export default function Settings() {
                       </div>
                       <Checkbox defaultChecked />
                     </div>
-                    
+
                     <div className="flex justify-end mt-4">
                       <Button>Salvar Preferências</Button>
                     </div>
@@ -594,7 +596,7 @@ export default function Settings() {
                 </CardContent>
               </Card>
             </TabsContent>
-            
+
             {/* Security Tab */}
             <TabsContent value="security" className="space-y-6">
               <Card>
@@ -630,7 +632,7 @@ export default function Settings() {
                       </div>
                       <Button className="mt-2">Alterar Senha</Button>
                     </div>
-                    
+
                     <div className="pt-4 border-t">
                       <h3 className="font-medium mb-2">Dispositivos Conectados</h3>
                       <div className="space-y-2">
@@ -650,7 +652,7 @@ export default function Settings() {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="pt-4 border-t">
                       <h3 className="font-medium mb-2">Exportação de Dados</h3>
                       <p className="text-sm text-slate-500 mb-2">
