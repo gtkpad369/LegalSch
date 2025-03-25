@@ -180,12 +180,48 @@ export function BookingForm({ onSubmit, isSubmitting = false }: BookingFormProps
           </div>
           
           <div className="mb-6">
-            <label className="flex items-start">
-              <input type="checkbox" className="mt-1 mr-2" required />
-              <span className="text-sm text-slate-600">
-                Concordo com os <a href="#" className="text-primary hover:underline">Termos de Uso</a> e <a href="#" className="text-primary hover:underline">Política de Privacidade</a>, incluindo o consentimento para o tratamento dos meus dados pessoais conforme a LGPD.
-              </span>
-            </label>
+            <div className="space-y-4">
+              <label className="flex items-start">
+                <input 
+                  type="checkbox" 
+                  className="mt-1 mr-2" 
+                  required 
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      window.localStorage.setItem('lgpd-consent', 'true');
+                    } else {
+                      window.localStorage.removeItem('lgpd-consent');
+                    }
+                  }}
+                />
+                <span className="text-sm text-slate-600">
+                  Concordo com os{" "}
+                  <button 
+                    type="button"
+                    onClick={() => setTermsOpen(true)} 
+                    className="text-primary hover:underline"
+                  >
+                    Termos de Uso
+                  </button>
+                  {" "}e{" "}
+                  <button 
+                    type="button"
+                    onClick={() => setPrivacyOpen(true)}
+                    className="text-primary hover:underline"
+                  >
+                    Política de Privacidade
+                  </button>
+                  , incluindo o consentimento para o tratamento dos meus dados pessoais conforme a LGPD.
+                </span>
+              </label>
+
+              <p className="text-xs text-slate-500">
+                Você pode solicitar a exclusão dos seus dados a qualquer momento através do email de contato.
+              </p>
+            </div>
+
+            <PrivacyPolicy open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+            <TermsOfUse open={termsOpen} onClose={() => setTermsOpen(false)} />
           </div>
           
           <div className="flex justify-end">
