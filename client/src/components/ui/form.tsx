@@ -174,3 +174,8 @@ export {
   FormMessage,
   FormField,
 }
+
+export type {
+  FormItemContextValue,
+  FormFieldContextValue,
+}
